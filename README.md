@@ -63,4 +63,4 @@ This stops the color service, restores every file the installer changed, and res
 | Desktop wallpaper | NASA, [Artemis II in Eclipse (art002e009301)](https://images.nasa.gov/details/art002e009301) |
 | Lock screen wallpaper | NASA, [A New View of the Moon (art002e009287)](https://images.nasa.gov/details/art002e009287) |
 
-Third-party assets keep their upstream licenses. They are downloaded at pinned revisions by `scripts/prepare.py`, not stored in this repository.
+The scripts are released under the [MIT License](LICENSE). Third-party assets keep their upstream licenses. They are downloaded at pinned revisions by `scripts/prepare.py`, not stored in this repository.
