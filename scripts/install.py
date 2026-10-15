@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Install Artemis assets locally, with a manifest-backed restore point."""
 from pathlib import Path
-import configparser, datetime, json, re, shutil, subprocess
+import configparser, datetime, json, re, shutil, subprocess, zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 HOME = Path.home()
@@ -73,6 +73,8 @@ for weight in ['Regular', 'Bold']:
     copy(ROOT / f'assets/SourceCodePro-{weight}.ttf', f'.local/share/fonts/SourceCodePro/SourceCodePro-{weight}.ttf')
 for weight in ['Regular', 'Semibold', 'Bold']:
     copy(ROOT / f'assets/SourceSans3-{weight}.ttf', f'.local/share/fonts/SourceSans3/SourceSans3-{weight}.ttf')
+with zipfile.ZipFile(ROOT / 'assets/krohnkite.kwinscript') as package:
+    package.extractall(save('.local/share/kwin/scripts/krohnkite'))
 copy(ROOT / 'assets/artemis-eclipse.jpg', '.local/share/wallpapers/Artemis-II/eclipse.jpg')
 copy(ROOT / 'assets/artemis-earthset.jpg', '.local/share/wallpapers/Artemis-II/earthset.jpg')
 
@@ -127,6 +129,11 @@ for key, value in {'library':'org.kde.kwin.aurorae', '__aurorae__svg__':'Graphit
     config('kwinrc', 'org.kde.kdecoration2', key, value)
 config('kwinrc', 'Plugins', 'blurEnabled', 'true')
 config('kwinrc', 'Plugins', 'contrastEnabled', 'true')
+config('kwinrc', 'Plugins', 'krohnkiteEnabled', 'true')
+# Floating panels overhang the work area by 8 px, so 24 px above and below leaves the same 16 px
+# gutter as between windows. The 8 px side margins line windows up with the panel edges.
+for key, value in {'screenGapTop': 24, 'screenGapBottom': 24, 'screenGapLeft': 8, 'screenGapRight': 8, 'screenGapBetween': 16}.items():
+    config('kwinrc', 'Script-krohnkite', key, value)
 config('kscreenlockerrc', 'Greeter', 'Theme', 'org.kde.breeze.desktop')
 subprocess.run(['kwriteconfig6', '--file', 'kscreenlockerrc', '--group', 'Greeter', '--group', 'Wallpaper', '--group', 'org.kde.image', '--group', 'General', '--key', 'Image', str(HOME / '.local/share/wallpapers/Artemis-II/earthset.jpg')], check=True)
 config('konsolerc', 'Desktop Entry', 'DefaultProfile', 'Artemis.profile')

@@ -13,6 +13,7 @@ A basic monochrome lunar preset for KDE Plasma 6, built around NASA's Artemis II
 | Colors | Breeze with dark Material You colors generated from the wallpaper |
 | Icons | YAMIS, outlined variants |
 | Window decoration | Graphite-dark-round with subdued outlines |
+| Tiling | Krohnkite with 16 px gutters that keep the panels floating, across four virtual desktops |
 | Fonts | Source Sans 3 for the interface, Source Code Pro for terminals and the panel clock |
 | Panels | Floating top bar with a centered clock, media controls, and the system tray, plus a floating dock |
 | Visualizer | Kurve with thin monochrome CAVA bars, hidden when no audio plays |
@@ -41,6 +42,24 @@ python3 scripts/apply.py          # back up the current look, install, and activ
 - Edit `scripts/layout.js` to change panel geometry or the pinned dock apps before you install.
 - Change color generation in the **KDE Material You Colors** widget or in `~/.config/kde-material-you-colors/config.conf`.
 - Adjust font sizes in **System Settings > Colors & Themes > Fonts**.
+- Change tiling layouts, gaps, and floating windows in **System Settings > Window Management > KWin Scripts > Krohnkite**.
+
+### Tiling shortcuts
+
+Krohnkite's defaults that collide with Plasma are remapped. Lock Session moves to Ctrl+Alt+L.
+
+| Keys | Action |
+| --- | --- |
+| Meta+H, Meta+J, Meta+K, Meta+L | Focus the window to the left, below, above, or right |
+| Meta+Shift+H, J, K, L | Move the window in that direction |
+| Meta+N, Meta+Shift+N | Focus the next or previous window |
+| Meta+Return | Make the window the master |
+| Meta+O, Meta+Shift+O | Add or remove a master window |
+| Meta+T, Meta+M | Tile or monocle layout |
+| Meta+Y, Meta+Shift+Y | Rotate the layout or the focused part |
+| Meta+F | Float or tile the window |
+| Alt+Shift+1 to 4 | Send the window to desktop 1 to 4 |
+| Meta+F1 to F4 | Switch to desktop 1 to 4 |
 
 ## Restore
 
@@ -58,6 +77,7 @@ This stops the color service, restores every file the installer changed, and res
 | Color generation | [KDE Material You Colors](https://github.com/luisbocanegra/kde-material-you-colors) |
 | Icons | [Yet Another Monochrome Icon Set](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) by Dirn |
 | Window decoration | [Graphite KDE theme](https://github.com/vinceliuice/Graphite-kde-theme) by vinceliuice |
+| Tiling | [Krohnkite](https://codeberg.org/anametologin/Krohnkite) |
 | Audio visualizer | [Kurve](https://github.com/luisbocanegra/kurve) and [CAVA](https://github.com/karlstav/cava) |
 | Fonts | [Source Sans 3](https://github.com/adobe-fonts/source-sans) and [Source Code Pro](https://github.com/adobe-fonts/source-code-pro) by Adobe |
 | Desktop wallpaper | NASA, [Artemis II in Eclipse (art002e009301)](https://images.nasa.gov/details/art002e009301) |

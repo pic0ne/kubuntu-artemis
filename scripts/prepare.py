@@ -27,6 +27,7 @@ DOWNLOADS = {
     "SourceSans3-Bold.ttf": f"https://raw.githubusercontent.com/adobe-fonts/source-sans/{SANS_REVISION}/TTF/SourceSans3-Bold.ttf",
     "artemis-eclipse.jpg": "https://images-assets.nasa.gov/image/art002e009301/art002e009301~orig.jpg",
     "artemis-earthset.jpg": "https://images-assets.nasa.gov/image/art002e009287/art002e009287~orig.jpg",
+    "krohnkite.kwinscript": "https://codeberg.org/anametologin/Krohnkite/releases/download/0.9.10.0_alpha_2/krohnkite-0.9.10.0_alpha_2_f045ec0.kwinscript",
 }
 DIGESTS = {
     "SourceCodePro-Regular.ttf": "74bd80d3e42a08517cd7e1108ba3d86f2da29ac0f3065be95e0357956ab9db37",
@@ -36,6 +37,7 @@ DIGESTS = {
     "SourceSans3-Bold.ttf": "9214b9d95e4231c609802815c2646c98174e2102d0d37f88978a7f8e71006e6a",
     "artemis-eclipse.jpg": "4073cbcd74cf27eef45e9d5ba4c2a114e1d11f0e086691b1ce65f5f0561e8697",
     "artemis-earthset.jpg": "60280887a24f2e9e29133759f6195620862d42b8f39dfd3b80c18e16ad1ecbd5",
+    "krohnkite.kwinscript": "0fac8a5255cefc977d5dd8c9e86c125db6d33ac6ffcbf1d8d384015f8fc0378c",
 }
 DEBS = [
     "cava=0.10.7+dfsg-1", "libiniparser4=4.2.6-1build1",

@@ -11,6 +11,14 @@ backend = home / '.local/bin/kde-material-you-colors'
 if backend.exists():
     subprocess.run([str(backend), '--stop'])
 subprocess.run(['systemctl', '--user', 'stop', 'plasma-plasmashell.service'], check=True)
+import dbus
+bus = dbus.SessionBus()
+# KWin only unloads scripts it can still find, so stop the tiler before its package is removed.
+bus.get_object('org.kde.KWin', '/Scripting').unloadScript('krohnkite', dbus_interface='org.kde.kwin.Scripting')
+desktops = backup / 'desktops.json'
+if desktops.exists():
+    for desktop in json.loads(desktops.read_text()):
+        bus.get_object('org.kde.KWin', '/VirtualDesktopManager').removeDesktop(desktop, dbus_interface='org.kde.KWin.VirtualDesktopManager')
 for item in json.loads((backup / 'manifest.json').read_text()):
     path = home / item['path']
     if path.is_dir() and not path.is_symlink():
@@ -25,9 +33,12 @@ for item in json.loads((backup / 'manifest.json').read_text()):
         else:
             shutil.copy2(src, path, follow_symlinks=False)
 subprocess.run(['systemctl', '--user', 'unset-environment', 'QML_IMPORT_PATH'])
-import dbus
-bus = dbus.SessionBus()
 bus.get_object('org.kde.KWin', '/KWin').reconfigure(dbus_interface='org.kde.KWin')
+shortcuts = backup / 'shortcuts.json'
+if shortcuts.exists():
+    accel = dbus.Interface(bus.get_object('org.kde.kglobalaccel', '/kglobalaccel'), 'org.kde.KGlobalAccel')
+    for owner, action, keys in reversed(json.loads(shortcuts.read_text())):
+        accel.setForeignShortcut([owner, action, '', ''], dbus.Array(keys, signature='i'))
 subprocess.run(['dbus-send', '--session', '--type=signal', '/KDEPlatformTheme', 'org.kde.KDEPlatformTheme.refreshFonts'])
 subprocess.run(['dbus-send', '--session', '--type=signal', '/KGlobalSettings', 'org.kde.KGlobalSettings.notifyChange', 'int32:0', 'int32:0'])
 subprocess.run(['systemctl', '--user', 'start', 'plasma-plasmashell.service'], check=True)
