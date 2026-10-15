@@ -1,6 +1,6 @@
 # Artemis for Kubuntu
 
-A monochrome lunar preset for KDE Plasma 6, built around NASA's Artemis II photography. Based on [KDE Artemis on r/unixporn](https://www.reddit.com/r/unixporn/comments/1shnpz9/kde_artemis/).
+A basic monochrome lunar preset for KDE Plasma 6, built around NASA's Artemis II photography. Based on [KDE Artemis on r/unixporn](https://www.reddit.com/r/unixporn/comments/1shnpz9/kde_artemis/).
 
 ![Desktop with the Artemis II eclipse wallpaper, floating top panel, audio visualizer, and centered dock](docs/images/desktop.jpg)
 
