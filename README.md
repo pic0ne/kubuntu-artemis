@@ -13,7 +13,7 @@ A basic monochrome lunar preset for KDE Plasma 6, built around NASA's Artemis II
 | Colors | Breeze with dark Material You colors generated from the wallpaper |
 | Icons | YAMIS, outlined variants |
 | Window decoration | Graphite-dark-round with subdued outlines |
-| Tiling | Krohnkite with 16 px gutters that keep the panels floating, across four virtual desktops |
+| Tiling | Krohnkite with 16 px gutters that keep the panels floating, across five virtual desktops |
 | Fonts | Source Sans 3 for the interface, Source Code Pro for terminals and the panel clock |
 | Panels | Floating top bar with a centered clock, media controls, and the system tray, plus a floating dock |
 | Visualizer | Kurve with thin monochrome CAVA bars, hidden when no audio plays |
@@ -44,22 +44,28 @@ python3 scripts/apply.py          # back up the current look, install, and activ
 - Adjust font sizes in **System Settings > Colors & Themes > Fonts**.
 - Change tiling layouts, gaps, and floating windows in **System Settings > Window Management > KWin Scripts > Krohnkite**.
 
-### Tiling shortcuts
+### Tiling keys
 
-Krohnkite's defaults that collide with Plasma are remapped. Lock Session moves to Ctrl+Alt+L.
+The keys match the komorebi setup of the Windows rice. H, J, K, L mean left, down, up, right. Meta
+keys keep their Plasma defaults.
 
 | Keys | Action |
 | --- | --- |
-| Meta+H, Meta+J, Meta+K, Meta+L | Focus the window to the left, below, above, or right |
-| Meta+Shift+H, J, K, L | Move the window in that direction |
-| Meta+N, Meta+Shift+N | Focus the next or previous window |
-| Meta+Return | Make the window the master |
-| Meta+O, Meta+Shift+O | Add or remove a master window |
-| Meta+T, Meta+M | Tile or monocle layout |
-| Meta+Y, Meta+Shift+Y | Rotate the layout or the focused part |
-| Meta+F | Float or tile the window |
-| Alt+Shift+1 to 4 | Send the window to desktop 1 to 4 |
-| Meta+F1 to F4 | Switch to desktop 1 to 4 |
+| Alt+H / J / K / L | Move focus to the window in that direction |
+| Alt+Shift+H / J / K / L | Move the focused window in that direction |
+| Alt+1 … 5 | Switch to desktop 1 to 5 |
+| Alt+Shift+1 … 5 | Send the focused window to that desktop |
+| Alt+T | Float the focused window, or put it back in the tiling |
+| Alt+Shift+F | Monocle: the focused window fills the desktop, press again to undo |
+| Alt++ / Alt+- | Grow or shrink the focused window horizontally (add Shift for vertically) |
+| Alt+X / Alt+Y | Rotate the layout, or the part holding the focused window |
+| Alt+Q / Alt+M | Close or minimise the focused window |
+| Alt+Shift+R | Re-tile into the tile layout, if the layout looks wrong |
+| Alt+P | Float every window on the desktop, press again to tile them |
+
+Komorebi keys without an equivalent here: Alt+Shift+Enter, because KDE cannot bind Enter on X11, the
+stacking keys (Alt+Arrow, Alt+;, Alt+[ and Alt+]), Alt+I, and Alt+O. Alt+X and Alt+Y rotate by 90°
+instead of mirroring, so two presses of Alt+X mirror the layout.
 
 ## Restore
 

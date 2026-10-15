@@ -11,29 +11,34 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-META, SHIFT, CTRL, ALT = 0x10000000, 0x02000000, 0x04000000, 0x08000000
-SCREENSAVER = 0x010000BA
-# Krohnkite's defaults collide with Plasma's own shortcuts. Meta+T and Meta+L go to the tiler, and Lock
-# Session moves to Ctrl+Alt+L. Krohnkite actions displaced by other Plasma keys move to free letters.
-# An entry that frees a key comes before the entry that takes it.
-SHORTCUTS = [
-    ("kwin", "Edit Tiles", []),
-    ("ksmserver", "Lock Session", [CTRL | ALT | ord("L"), SCREENSAVER]),
-    ("kwin", "KrohnkiteTileLayout", [META | ord("T")]),
-    ("kwin", "KrohnkiteFocusRight", [META | ord("L")]),
-    ("kwin", "KrohnkiteIncrease", [META | ord("O")]),
-    ("kwin", "KrohnkiteDecrease", [META | SHIFT | ord("O")]),
-    ("kwin", "KrohnkiteRotate", [META | ord("Y")]),
-    ("kwin", "KrohnkiteRotatePart", [META | SHIFT | ord("Y")]),
-    ("kwin", "KrohnkiteFocusNext", [META | ord("N")]),
-    ("kwin", "KrohnkiteFocusPrev", [META | SHIFT | ord("N")]),
-]
+SHIFT, ALT = 0x02000000, 0x08000000
+DESKTOPS = 5
+# The Alt layer of the komorebi rice on Windows, so both desktops share one set of keys. Komorebi's
+# stacking keys have no Krohnkite counterpart, and kglobalaccel cannot grab Enter on X11, so
+# Alt+Shift+Enter (set master) stays unbound. Alt+X and Alt+Y rotate instead of mirroring.
+TILING = {
+    "KrohnkiteFocusLeft": ALT | ord("H"),
+    "KrohnkiteFocusDown": ALT | ord("J"),
+    "KrohnkiteFocusUp": ALT | ord("K"),
+    "KrohnkiteFocusRight": ALT | ord("L"),
+    "KrohnkiteShiftLeft": ALT | SHIFT | ord("H"),
+    "KrohnkiteShiftDown": ALT | SHIFT | ord("J"),
+    "KrohnkiteShiftUp": ALT | SHIFT | ord("K"),
+    "KrohnkiteShiftRight": ALT | SHIFT | ord("L"),
+    "KrohnkiteToggleFloat": ALT | ord("T"),
+    "KrohnkiteMonocleLayout": ALT | SHIFT | ord("F"),
+    "KrohnkiteRotate": ALT | ord("X"),
+    "KrohnkiteRotatePart": ALT | ord("Y"),
+    "KrohnkiteTileLayout": ALT | SHIFT | ord("R"),
+    "KrohnkiteFloatAll": ALT | ord("P"),
+}
+# KWin actions that keep their Plasma keys and gain the komorebi one.
+EXTRA = {"Window Close": ALT | ord("Q"), "Window Minimize": ALT | ord("M")} | {
+    f"Switch to Desktop {n}": ALT | ord(str(n)) for n in range(1, DESKTOPS + 1)}
 
-DESKTOPS = 4
 
-
-def shifted_digits():
-    """Map 1-4 to the Qt keys of their shifted symbols on the active layout (Spanish: ! " · $)."""
+def key_levels(keysym):
+    """Qt keys for the plain and shifted symbols of the physical key that types `keysym`."""
     x11 = ctypes.cdll.LoadLibrary("libX11.so.6")
     x11.XOpenDisplay.restype = ctypes.c_void_p
     x11.XKeysymToKeycode.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
@@ -41,16 +46,25 @@ def shifted_digits():
     x11.XkbKeycodeToKeysym.restype = ctypes.c_ulong
     display = x11.XOpenDisplay(None)
     try:
-        return {n: x11.XkbKeycodeToKeysym(display, x11.XKeysymToKeycode(display, ord(str(n))), 0, 1) for n in range(1, DESKTOPS + 1)}
+        keycode = x11.XKeysymToKeycode(display, keysym)
+        plain, shifted = (x11.XkbKeycodeToKeysym(display, keycode, 0, level) for level in (0, 1))
     finally:
         x11.XCloseDisplay(ctypes.c_void_p(display))
+    # Latin-1 keysyms equal their Qt key codes; anything else falls back to Shift plus the plain key.
+    return plain, shifted if shifted < 0x100 else SHIFT | plain
 
 
-def desktop_shortcuts():
-    # kglobalaccel matches Alt+Shift+2 only when registered as the shifted symbol, Alt+" on a Spanish layout.
-    # Latin-1 keysyms equal their Qt key codes; anything else falls back to the digit.
-    return [("kwin", f"Window to Desktop {n}", [ALT | (symbol if symbol < 0x100 else SHIFT | ord(str(n)))])
-            for n, symbol in shifted_digits().items()]
+def layout_shortcuts():
+    # kglobalaccel matches Alt+Shift on a symbol key only when registered as the shifted symbol, for example
+    # Alt+" for Alt+Shift+2 on a Spanish layout, so these keys come from the active keyboard layout.
+    plus, plus_shifted = key_levels(ord("+"))
+    minus, minus_shifted = key_levels(ord("-"))
+    return {
+        "KrohnkitegrowWidth": ALT | plus,
+        "KrohnkiteShrinkWidth": ALT | minus,
+        "KrohnkiteGrowHeight": ALT | plus_shifted,
+        "KrohnkiteShrinkHeight": ALT | minus_shifted,
+    } | {f"Window to Desktop {n}": ALT | key_levels(ord(str(n)))[1] for n in range(1, DESKTOPS + 1)}
 
 
 def add_desktops(bus, backup):
@@ -74,11 +88,16 @@ def bind_shortcuts(bus, backup):
     else:
         raise SystemExit("Krohnkite did not register its shortcuts.")
     accel = dbus.Interface(bus.get_object("org.kde.kglobalaccel", "/kglobalaccel"), "org.kde.KGlobalAccel")
+    current = lambda action: [int(k) for k in accel.shortcut(["kwin", action, "", ""]) if int(k)]
+    assigned = TILING | layout_shortcuts()
+    # Krohnkite's own Meta defaults are cleared so Meta stays with Plasma.
+    plan = {str(action): [] for action in component.shortcutNames() if str(action).startswith("Krohnkite")}
+    plan |= {action: [key] for action, key in assigned.items()}
+    plan |= {action: current(action) + [key] for action, key in EXTRA.items()}
     previous = []
-    for owner, action, keys in SHORTCUTS + desktop_shortcuts():
-        action_id = [owner, action, "", ""]
-        previous.append([owner, action, [int(k) for k in accel.shortcut(action_id)]])
-        accel.setForeignShortcut(action_id, dbus.Array(keys, signature="i"))
+    for action, keys in plan.items():
+        previous.append(["kwin", action, current(action)])
+        accel.setForeignShortcut(["kwin", action, "", ""], dbus.Array(keys, signature="i"))
     # Replayed in reverse by restore.py so each key is freed before its original owner takes it back.
     (backup / "shortcuts.json").write_text(json.dumps(previous, indent=2))
 

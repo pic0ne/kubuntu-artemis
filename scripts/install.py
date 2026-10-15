@@ -134,6 +134,8 @@ config('kwinrc', 'Plugins', 'krohnkiteEnabled', 'true')
 # gutter as between windows. The 8 px side margins line windows up with the panel edges.
 for key, value in {'screenGapTop': 24, 'screenGapBottom': 24, 'screenGapLeft': 8, 'screenGapRight': 8, 'screenGapBetween': 16}.items():
     config('kwinrc', 'Script-krohnkite', key, value)
+# Like komorebi, focusing or moving past the edge may cross to another monitor but never to another desktop.
+config('kwinrc', 'Script-krohnkite', 'focusMoveVDesktopsNormal', 'false')
 config('kscreenlockerrc', 'Greeter', 'Theme', 'org.kde.breeze.desktop')
 subprocess.run(['kwriteconfig6', '--file', 'kscreenlockerrc', '--group', 'Greeter', '--group', 'Wallpaper', '--group', 'org.kde.image', '--group', 'General', '--key', 'Image', str(HOME / '.local/share/wallpapers/Artemis-II/earthset.jpg')], check=True)
 config('konsolerc', 'Desktop Entry', 'DefaultProfile', 'Artemis.profile')
