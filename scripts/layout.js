@@ -26,10 +26,14 @@ top.location = 'top';
 top.height = 40;
 top.lengthMode = 'fill';
 top.alignment = 'center';
-top.hiding = 'none';
+// Plasma docks a floating panel whenever a window's area meets it, and the invisible shadow
+// margins of self-decorated apps such as Electron ones count, so with normal visibility the bars
+// jump on every desktop switch. Panels set to let windows go below always float.
+top.hiding = 'windowsgobelow';
 configure(top, ['General'], {floating: true, opacityMode: 1});
 var menu = top.addWidget('org.kde.plasma.kickoff');
 configure(menu, ['General'], {icon: 'start-here-kde'});
+top.addWidget('artemis.workspaces');
 var left = top.addWidget('org.kde.plasma.panelspacer');
 configure(left, ['General'], {expanding: true});
 var clock = top.addWidget('org.kde.plasma.digitalclock');
@@ -50,7 +54,7 @@ dock.location = 'bottom';
 dock.height = 64;
 dock.alignment = 'center';
 dock.lengthMode = 'fit';
-dock.hiding = 'none';
+dock.hiding = 'windowsgobelow';
 configure(dock, ['General'], {floating: true, opacityMode: 1});
 var tasks = dock.addWidget('org.kde.plasma.icontasks');
 configure(tasks, ['General'], {

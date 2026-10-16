@@ -1,0 +1,13 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Category": "Windows and Tasks",
+        "Description": "One dot per virtual desktop. Click a dot or scroll to switch.",
+        "Icon": "virtual-desktops",
+        "Id": "artemis.workspaces",
+        "License": "MIT",
+        "Name": "Artemis Workspaces",
+        "Version": "1.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

@@ -69,12 +69,17 @@ def subdued_outline(match):
 decoration.write_text(re.sub(r'<(?:path|rect)\b[^>]*class="ColorScheme-ButtonFocus"[^>]*>', subdued_outline, decoration.read_text(), flags=re.S))
 copy(ROOT / 'assets/kurve/package', '.local/share/plasma/plasmoids/luisbocanegra.audio.visualizer')
 copy(ROOT / 'assets/kde-material-you-colors/src/plasmoid/package', '.local/share/plasma/plasmoids/luisbocanegra.kdematerialyou.colors')
+copy(ROOT / 'widgets/workspaces', '.local/share/plasma/plasmoids/artemis.workspaces')
 for weight in ['Regular', 'Bold']:
     copy(ROOT / f'assets/SourceCodePro-{weight}.ttf', f'.local/share/fonts/SourceCodePro/SourceCodePro-{weight}.ttf')
 for weight in ['Regular', 'Semibold', 'Bold']:
     copy(ROOT / f'assets/SourceSans3-{weight}.ttf', f'.local/share/fonts/SourceSans3/SourceSans3-{weight}.ttf')
 with zipfile.ZipFile(ROOT / 'assets/krohnkite.kwinscript') as package:
     package.extractall(save('.local/share/kwin/scripts/krohnkite'))
+# The alpha's drag preview overlay stays mapped as an invisible 160 px square in the top-left
+# corner and swallows clicks on X11. It only previews dock slots, which are unused here.
+krohnkite_ui = HOME / '.local/share/kwin/scripts/krohnkite/contents/ui/main.qml'
+krohnkite_ui.write_text(krohnkite_ui.read_text().replace('source: "dragpreview.qml"', 'source: ""'))
 copy(ROOT / 'assets/artemis-eclipse.jpg', '.local/share/wallpapers/Artemis-II/eclipse.jpg')
 copy(ROOT / 'assets/artemis-earthset.jpg', '.local/share/wallpapers/Artemis-II/earthset.jpg')
 
@@ -130,12 +135,16 @@ for key, value in {'library':'org.kde.kwin.aurorae', '__aurorae__svg__':'Graphit
 config('kwinrc', 'Plugins', 'blurEnabled', 'true')
 config('kwinrc', 'Plugins', 'contrastEnabled', 'true')
 config('kwinrc', 'Plugins', 'krohnkiteEnabled', 'true')
-# Floating panels overhang the work area by 8 px, so 24 px above and below leaves the same 16 px
-# gutter as between windows. The 8 px side margins line windows up with the panel edges.
-for key, value in {'screenGapTop': 24, 'screenGapBottom': 24, 'screenGapLeft': 8, 'screenGapRight': 8, 'screenGapBetween': 16}.items():
+# The panels reserve no space, so the gaps clear them. The top bar ends 48 px down and the dock
+# starts 72 px up, and 16 px more matches the gutter between windows. The 8 px side margins line
+# windows up with the panel edges.
+for key, value in {'screenGapTop': 64, 'screenGapBottom': 88, 'screenGapLeft': 8, 'screenGapRight': 8, 'screenGapBetween': 16}.items():
     config('kwinrc', 'Script-krohnkite', key, value)
 # Like komorebi, focusing or moving past the edge may cross to another monitor but never to another desktop.
 config('kwinrc', 'Script-krohnkite', 'focusMoveVDesktopsNormal', 'false')
+# By default a crowded desktop floats the oldest tiled window whenever any tile drops below some
+# window's minimum size, and that window never tiles again. Tile it anyway, like komorebi does.
+config('kwinrc', 'Script-krohnkite', 'unfitGreater', 'false')
 config('kscreenlockerrc', 'Greeter', 'Theme', 'org.kde.breeze.desktop')
 subprocess.run(['kwriteconfig6', '--file', 'kscreenlockerrc', '--group', 'Greeter', '--group', 'Wallpaper', '--group', 'org.kde.image', '--group', 'General', '--key', 'Image', str(HOME / '.local/share/wallpapers/Artemis-II/earthset.jpg')], check=True)
 config('konsolerc', 'Desktop Entry', 'DefaultProfile', 'Artemis.profile')

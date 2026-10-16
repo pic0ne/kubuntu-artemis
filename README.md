@@ -13,9 +13,9 @@ A basic monochrome lunar preset for KDE Plasma 6, built around NASA's Artemis II
 | Colors | Breeze with dark Material You colors generated from the wallpaper |
 | Icons | YAMIS, outlined variants |
 | Window decoration | Graphite-dark-round with subdued outlines |
-| Tiling | Krohnkite with 16 px gutters that keep the panels floating, across five virtual desktops |
+| Tiling | Krohnkite with 16 px gutters around the floating panels, across five virtual desktops |
 | Fonts | Source Sans 3 for the interface, Source Code Pro for terminals and the panel clock |
-| Panels | Floating top bar with a centered clock, media controls, and the system tray, plus a floating dock |
+| Panels | Floating top bar with clickable workspace dots, a centered clock, media controls, and the system tray, plus a floating dock |
 | Visualizer | Kurve with thin monochrome CAVA bars, hidden when no audio plays |
 | Terminal | Konsole profile and an `artemis-fetch` Fastfetch preset |
 
