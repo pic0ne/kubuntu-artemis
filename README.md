@@ -2,9 +2,7 @@
 
 A basic monochrome lunar preset for KDE Plasma 6, built around NASA's Artemis II photography. Based on [KDE Artemis on r/unixporn](https://www.reddit.com/r/unixporn/comments/1shnpz9/kde_artemis/).
 
-![Desktop with the Artemis II eclipse wallpaper, floating top bar with workspace dots and media controls, audio visualizer, and centered dock](docs/images/desktop.jpg)
-
-![Krohnkite tiling Konsole, Dolphin, and CAVA as they open, a switch to an empty desktop and back, then the windows closing to the bare wallpaper](docs/images/tiling.gif)
+![Desktop with Konsole and Dolphin over the Artemis II eclipse wallpaper, floating top bar with workspace dots and media controls, audio visualizer, and centered dock](docs/images/desktop.jpg)
 
 ![Lock screen with the Artemis II Earthset photograph](docs/images/lock-screen.jpg)
 
